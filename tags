@@ -1,0 +1,20 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+JhhttpError	jhhttp.py	/^class JhhttpError(Exception):$/;"	c	inherits:Exception
+RequestWithMethod	jhhttp.py	/^class RequestWithMethod(urllib2.Request):$/;"	c	inherits:urllib2.Request
+__init__	jhhttp.py	/^        origin_req_host=None, unverifiable=False):$/;"	m	class:RequestWithMethod	access:public
+__init__	jhhttp.py	/^    def __init__(self, value):$/;"	m	class:JhhttpError	access:public
+__str__	jhhttp.py	/^    def __str__(self):$/;"	m	class:JhhttpError	file:	access:private
+delete	jhhttp.py	/^def delete(url):$/;"	f	access:public
+get	jhhttp.py	/^def get(url):$/;"	f	access:public
+get_method	jhhttp.py	/^    def get_method(self):$/;"	m	class:RequestWithMethod	access:public
+post	jhhttp.py	/^def post(url, data):$/;"	f	access:public
+put	jhhttp.py	/^def put(url, data=None):$/;"	f	access:public
+rest_delete	jhhttp.py	/^def rest_delete(url):$/;"	f	access:public
+rest_get	jhhttp.py	/^def rest_get(url):$/;"	f	access:public
+rest_post	jhhttp.py	/^def rest_post(url, data):$/;"	f	access:public
+rest_put	jhhttp.py	/^def rest_put(url, data=None):$/;"	f	access:public
