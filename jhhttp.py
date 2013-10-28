@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# jhhttp, a simple API tool, support RESTful APIs
 import simplejson
+import urllib
 import urllib2
 import traceback
 
@@ -25,11 +27,6 @@ class JhhttpError(Exception):
         return repr(self.value)
 
 
-def _prepare_data(data=None):
-    if type(data) is not str:
-        data = simplejson.dumps(data)
-    return data
-
 def _restful_headers(headers=None):
     if headers is None:
         headers = {}
@@ -38,7 +35,24 @@ def _restful_headers(headers=None):
         headers['Content-Type'] = 'application/json'
     return headers
 
+def _restful_data(data):
+    if type(data) is not str:
+        data = simplejson.dumps(data)
+    return data
+
+def _prepare_data(data):
+    if type(data) is str or data is None:
+        return data
+    try:
+        data = urllib.urlencode(data)
+    except Exception, e:
+        traceback.print_exc()
+        raise JhhttpError(e)
+    return data
+
 def _open(url, method, data=None, headers=None):
+    if headers is None:
+        headers = {}
     try:
         req = RequestWithMethod(url, method, data, headers)
         response = urllib2.urlopen(req)
@@ -48,9 +62,15 @@ def _open(url, method, data=None, headers=None):
     return response
 
 def _return(response, response_type):
+    try:
+        content = response.read()
+    except Exception, e:
+        traceback.print_exc()
+        raise JhhttpError(e)
+    if not content:
+        return None
     if response_type is 'json':
         try:
-            content = response.read()
             ret = simplejson.loads(content)
         except Exception, e:
             traceback.print_exc()
@@ -60,34 +80,39 @@ def _return(response, response_type):
     return ret
 
 def _check(url, data, headers):
-    if type(headers) is not dict:
+    if headers is not None and type(headers) is not dict:
         raise JhhttpError('headers is not a dict')
 
 def _do_http(url, data=None, headers=None, method='GET', response_type='text'):
-    _check()
-    data = _prepare_data(data)
+    _check(url, data, headers)
     f = _open(url, method, data, headers)
     return _return(f, response_type)
 
 def rest_put(url, data=None, headers=None):
     headers = _restful_headers(headers)
+    data = _restful_data(data)
     return _do_http(url, data, headers, 'PUT', 'json')
 
 def put(url, data=None, headers=None):
+    data = _prepare_data(data)
     return _do_http(url, data, headers, 'PUT', 'text')
 
 def rest_delete(url, data=None, headers=None):
+    data = _restful_data(data)
     headers = _restful_headers(headers)
     return _do_http(url, data, headers, 'DELETE', 'json')
 
 def delete(url, data=None, headers=None):
+    data = _prepare_data(data)
     return _do_http(url, data, headers, 'DELETE', 'text')
 
 def rest_post(url, data=None, headers=None):
+    data = _restful_data(data)
     headers = _restful_headers(headers)
     return _do_http(url, data, headers, 'POST', 'json')
 
 def post(url, data=None, headers=None):
+    data = _prepare_data(data)
     return _do_http(url, data, headers, 'POST', 'text')
 
 def rest_get(url, headers=None):
