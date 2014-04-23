@@ -76,7 +76,7 @@ def _return(response, response_type):
             traceback.print_exc()
             raise JhhttpError(e)
     else:
-        ret = repr(content)
+        ret = content
     return ret
 
 def _check(url, data, headers):
@@ -84,9 +84,14 @@ def _check(url, data, headers):
         raise JhhttpError('headers is not a dict')
 
 def _do_http(url, data=None, headers=None, method='GET', response_type='text'):
-    _check(url, data, headers)
-    f = _open(url, method, data, headers)
-    return _return(f, response_type)
+    try:
+        _check(url, data, headers)
+        f = _open(url, method, data, headers)
+        ret = _return(f, response_type)
+    except JhhttpError, e:
+        print('JhhttpError, url = %s' % url)
+        ret = None
+    return ret
 
 def rest_put(url, data=None, headers=None):
     headers = _restful_headers(headers)
@@ -115,11 +120,11 @@ def post(url, data=None, headers=None):
     data = _prepare_data(data)
     return _do_http(url, data, headers, 'POST', 'text')
 
-def rest_get(url, headers=None):
-    headers = _restful_headers(headers)
+def rest_get(url, data=None, headers=None):
     data = None
+    headers = _restful_headers(headers)
     return _do_http(url, data, headers, 'GET', 'json')
 
-def get(url, headers=None):
+def get(url, data=None, headers=None):
     data = None
     return _do_http(url, data, headers, 'GET', 'text')
